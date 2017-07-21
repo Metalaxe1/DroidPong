@@ -9,11 +9,9 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Random;
 
 
 /**
@@ -22,17 +20,11 @@ import java.util.Random;
 
 public class GameAnimationView extends View{
     private final float SCREEN_CONSTANT = getResources().getDisplayMetrics().scaledDensity;
-    private float RADIUS;
-    private float paddleLength;
-    private float paddleHeight;
+    private float RADIUS, paddleLength, paddleHeight, ballX, ballY, ballVelX, ballVelY, paddleX, average;
+    private int HEIGHT,WIDTH, ballsMissed, ballsHit;
     private Handler handler;
-    private float ballX, ballY, ballVelX, ballVelY;
-    private float paddleX;
-    private float average;
     private Paint ballPaint, paddlePaint, scorePaint, courtPaint, gameOverPaint;
-    private int HEIGHT,WIDTH;
     private boolean showPaddle, running, drawBall, gameOver;
-    private int ballsMissed, ballsHit;
     private SecureRandom rand;
     private DecimalFormat formatter;
     private ArrayList<PongEventListener> listeners;
@@ -57,9 +49,7 @@ public class GameAnimationView extends View{
                 if (event.getAction() == MotionEvent.ACTION_DOWN){
                     showPaddle = true;
                     if (!running && !gameOver){
-                        for (int c = 0; c < listeners.size(); c++) {
-                            listeners.get(c).onDataLoaded("Game Started");
-                        }
+                        notifyAllListeners("Game Started");
                         ballX = RADIUS + rand.nextFloat() * (WIDTH - 2 * RADIUS);
                         ballY = RADIUS;
                         ballVelY = (float) (.015*HEIGHT);
@@ -137,32 +127,48 @@ public class GameAnimationView extends View{
     }
 
 
+
     private Runnable r = new Runnable() {
         @Override
 
         public void run() {
             if (drawBall) {
+                // If ball hits paddle.
                 if(ballY >= HEIGHT - paddleHeight*8 && ballY <= (HEIGHT-paddleHeight*8) + paddleHeight && showPaddle) {
+                    // If ball hits the center of the paddle.
                     if (ballX >= paddleX + (.3*paddleLength) && ballX <= paddleX + (.7*paddleLength)){
                         ballVelY = -ballVelY;
                         int change = returnRandom(3);
+                        // Randomly determine the change when hitting the center of the paddle.
                         switch (change){
                             case 0: {
+                                // no change
                                 change = 0;
                                 break;
                             }
                             case 1: {
+                                // increase by 5dp.
                                 change = 5;
                                 break;
                             }
                             case 2: {
+                                // increase by 10dp.
                                 change = 10;
                             }
                         }
-                        ballVelX = (float) (.01*WIDTH) + change;
+                        // Make the change in X velocity only.
+                        switch(returnRandom(2)){
+                            case 0: {
+                                ballVelX = (float) ballVelX + change;
+                                break;
+                            }
+                            default: {
+                                ballVelX = (float) ballVelX - change;
+                            }
+                        }
                         ballsHit++;
                     }
-
+                    // If ball strikes the paddle in the middle/outer sections
                     if ((ballX >= paddleX + (.2*paddleLength) && ballX < paddleX + (.3*paddleLength)) || (ballX > paddleX + (.7*paddleLength) && ballX <= paddleX + (.8*paddleLength))){
                         ballVelY = -ballVelY;
                         if (ballVelX > 0) {
@@ -170,7 +176,7 @@ public class GameAnimationView extends View{
                         } else ballVelX = ballVelX - 10;
                         ballsHit++;
                     }
-
+                    // If ball strikes the paddle in the outer sections
                     if ((ballX >= paddleX && ballX < paddleX + (.2*paddleLength)) || (ballX > paddleX + (.8*paddleLength) && ballX <= paddleX + paddleLength)){
                         ballVelY = -ballVelY;
                         if (ballVelX > 0) {
@@ -179,33 +185,30 @@ public class GameAnimationView extends View{
                         ballsHit++;
                     }
                 }
-
+                // Left side of the court was hit.
                 if (ballX <= RADIUS) {
                     ballVelX = -ballVelX;
                     ballX = ballX + 5;
                 }
+                // Right side of the court was hit.
                 if (ballX >= WIDTH - RADIUS){
                     ballVelX = -ballVelX;
                     ballX = ballX - 5;
                 }
+                // Top was hit.
                 if (ballY < RADIUS) {
                     ballVelY = -ballVelY;
-                    System.out.println("Top was hit.");
                 }
+                // Volley was missed.
                 if (ballY >= HEIGHT + RADIUS) {
                     ballsMissed++;
                     drawBall = false;
                     if (ballsMissed == 10){
-                        for (int c = 0; c < listeners.size(); c++) {
-                            listeners.get(c).onDataLoaded("Game Over");
-                        }
+                        notifyAllListeners("Game Over");
                         running = false;
                         gameOver = true;
                     } else {
-                        handler.postDelayed(missedBall, 3000);
-                        for (int c = 0; c < listeners.size(); c++) {
-                            listeners.get(c).onDataLoaded("Missed Ball");
-                        }
+                        handler.postDelayed(missedBall, 1000);
                     }
                 }
                 ballX += ballVelX;
@@ -214,7 +217,7 @@ public class GameAnimationView extends View{
             if (ballsMissed+ballsHit != 0){
                 average = ballsHit/(float)(ballsMissed+ballsHit)*100;
             }
-
+            // Redraw the canvas with changes.
             invalidate();
         }
     };
@@ -222,7 +225,7 @@ public class GameAnimationView extends View{
     private Runnable missedBall = new Runnable() {
         @Override
         public void run() {
-            //float startLocation = (WIDTH - 2 * RADIUS);
+            notifyAllListeners("Missed Ball");
             showPaddle = false;
             running = false;
             invalidate();
@@ -280,11 +283,14 @@ public class GameAnimationView extends View{
         return temp.nextInt(size);
     }
 
-    public interface PongEventListener {
-        // need to pass relevant arguments related to the event triggered
-        public void onObjectReady(String title);
+    private void notifyAllListeners(String message){
+        for (int c = 0; c < listeners.size(); c++) {
+            listeners.get(c).onDataLoaded(message);
+        }
+    }
 
-        // or when data has been loaded
+    public interface PongEventListener {
+        public void onObjectReady(String title);
         public void onDataLoaded(String data);
     }
 }

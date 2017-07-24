@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 
 /**
  * Created by Anthony Ratliff on 7/17/2017.
@@ -20,13 +21,22 @@ public class StartGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("Droid Pong v1.0 by Anthony Ratliff");
-            actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#22B14C")));
+            actionBar.setTitle("Droid Pong");
+            actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1946BA")));
         }
     }
 
-    public void startGameClick(View v){
+    public void startSingleGameClick(View v){
+        Button singleStart = (Button) v.findViewById(R.id.button_single_start);
+        singleStart.setPressed(true);
+        singleStart.invalidate();
+        //singleStart.setPressed(false);
+        //singleStart.invalidate();
         Intent intent = new Intent(this, PongActivity.class);
         startActivity(intent);
+    }
+
+    public void startHtHGameClick(View v){
+
     }
 }

@@ -22,7 +22,7 @@ public class PongActivity extends AppCompatActivity {
     private GameAnimationView animation;
     private Handler handler;
     private Button buttonEnd;
-    private TextView ballStart;
+    private TextView ballStartText, gameOverText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,11 +42,14 @@ public class PongActivity extends AppCompatActivity {
                 }
                 if (data.equals("Missed Ball")){
                     buttonEnd.setVisibility(View.VISIBLE);
-                    ballStart.setVisibility(View.VISIBLE);
+                    ballStartText.setVisibility(View.VISIBLE);
                 }
                 if (data.equals("Game Started")){
                     buttonEnd.setVisibility(View.GONE);
-                    ballStart.setVisibility(View.GONE);
+                    ballStartText.setVisibility(View.GONE);
+                }
+                if (data.equals("Game Over")){
+                    gameOverText.setVisibility(View.VISIBLE);
                 }
 
             }
@@ -66,7 +69,9 @@ public class PongActivity extends AppCompatActivity {
 
         buttonEnd = (Button) findViewById(R.id.button_end);
         buttonEnd.setVisibility(View.GONE);
-        ballStart = (TextView) findViewById(R.id.text_ball_start);
+        ballStartText = (TextView) findViewById(R.id.text_ball_start);
+        gameOverText = (TextView) findViewById(R.id.text_game_over);
+        gameOverText.setVisibility(View.GONE);
         //mContentView.setVisibility(View.INVISIBLE);
     }
 

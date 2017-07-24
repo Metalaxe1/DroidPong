@@ -20,10 +20,12 @@ import java.util.ArrayList;
 
 public class GameAnimationView extends View{
     private final float SCREEN_CONSTANT = getResources().getDisplayMetrics().scaledDensity;
+    private int HEIGHT = getResources().getDisplayMetrics().heightPixels;
+    private int WIDTH = getResources().getDisplayMetrics().widthPixels;
     private float RADIUS, paddleLength, paddleHeight, ballX, ballY, ballVelX, ballVelY, paddleX, average;
-    private int HEIGHT,WIDTH, ballsMissed, ballsHit;
+    private int ballsMissed, ballsHit;
     private Handler handler;
-    private Paint ballPaint, paddlePaint, scorePaint, courtPaint, gameOverPaint;
+    private Paint ballPaint, paddlePaint, scorePaint, courtPaint;
     private boolean showPaddle, running, drawBall, gameOver;
     private SecureRandom rand;
     private DecimalFormat formatter;
@@ -41,6 +43,7 @@ public class GameAnimationView extends View{
         average = 100f;
         ballsMissed = 0;
         ballsHit = 0;
+        System.out.println(WIDTH + "\t" + HEIGHT);
         initPaints();
         this.listeners = new ArrayList<>();
         setOnTouchListener(new OnTouchListener() {
@@ -84,7 +87,6 @@ public class GameAnimationView extends View{
         paddlePaint = new Paint();
         scorePaint = new Paint();
         courtPaint = new Paint();
-        gameOverPaint = new Paint();
         ballPaint.setAntiAlias(true);
         ballPaint.setColor(Color.YELLOW);
         ballPaint.setStyle(Paint.Style.FILL);
@@ -104,13 +106,6 @@ public class GameAnimationView extends View{
         courtPaint.setColor(Color.WHITE);
         courtPaint.setStyle(Paint.Style.STROKE);
         courtPaint.setStrokeJoin(Paint.Join.MITER);
-        gameOverPaint.setAntiAlias(true);
-        gameOverPaint.setColor(Color.WHITE);
-        gameOverPaint.setStyle(Paint.Style.FILL);
-        gameOverPaint.setTextSize(64*SCREEN_CONSTANT);
-        gameOverPaint.setFakeBoldText(true);
-        gameOverPaint.setStrokeJoin(Paint.Join.MITER);
-        gameOverPaint.setTextAlign(Paint.Align.CENTER);
     }
 
     // Initialize all of the screen constants.
@@ -246,10 +241,6 @@ public class GameAnimationView extends View{
 
         scorePaint.setColor(Color.WHITE);
         canvas.drawText("Average Score: " + formatter.format(average) + "%", (float) (WIDTH / 2) + (120*SCREEN_CONSTANT), (float) 60*SCREEN_CONSTANT, scorePaint);
-
-        if (gameOver){
-            canvas.drawText("GAME OVER", (float) (WIDTH / 2), (float) 260*SCREEN_CONSTANT, gameOverPaint);
-        }
 
         if (drawBall) {
             canvas.drawCircle((float) ballX, (float) ballY, RADIUS, ballPaint);

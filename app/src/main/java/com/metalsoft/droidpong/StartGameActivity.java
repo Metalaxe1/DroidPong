@@ -19,7 +19,6 @@ import android.widget.Toast;
  */
 
 public class StartGameActivity extends AppCompatActivity {
-    private Button hthButton;
     private Button singleStart;
     private Handler handler;
     //private ScoresDatabase scoresDatabase;
@@ -37,7 +36,7 @@ public class StartGameActivity extends AppCompatActivity {
         }
         handler = new Handler();
         singleStart = (Button) findViewById(R.id.button_single_start);
-        hthButton = (Button) findViewById(R.id.button_hth_start);
+        Button hthButton = (Button) findViewById(R.id.button_hth_start);
         hthButton.setVisibility(View.GONE);
         //scoresDatabase = new ScoresDatabase(this);
         /*

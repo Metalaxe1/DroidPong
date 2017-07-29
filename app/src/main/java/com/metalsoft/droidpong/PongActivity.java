@@ -1,13 +1,9 @@
 package com.metalsoft.droidpong;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,8 +14,6 @@ import android.widget.TextView;
  */
 public class PongActivity extends AppCompatActivity {
 
-    private View mContentView;
-    private GameAnimationView animation;
     private Handler handler;
     private Button buttonEnd;
     private TextView ballStartText, gameOverText;
@@ -27,7 +21,7 @@ public class PongActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pong);
-        animation = (GameAnimationView) findViewById(R.id.view);
+        GameAnimationView animation = (GameAnimationView) findViewById(R.id.view);
         handler = new Handler();
         animation.setCustomObjectListener(new GameAnimationView.PongEventListener() {
             @Override
@@ -54,7 +48,7 @@ public class PongActivity extends AppCompatActivity {
 
             }
         });
-        mContentView = findViewById(R.id.fullscreen_content);
+        View mContentView = findViewById(R.id.fullscreen_content);
         mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -72,7 +66,6 @@ public class PongActivity extends AppCompatActivity {
         ballStartText = (TextView) findViewById(R.id.text_ball_start);
         gameOverText = (TextView) findViewById(R.id.text_game_over);
         gameOverText.setVisibility(View.GONE);
-        //mContentView.setVisibility(View.INVISIBLE);
     }
 
     public void endGameClick(View v){

@@ -235,10 +235,10 @@ public class GameAnimationView extends View{
         canvas.drawText("Average Score: " + formatter.format(average) + "%", (float) (WIDTH / 2) + (120*SCREEN_CONSTANT), (float) 60*SCREEN_CONSTANT, scorePaint);
 
         if (drawBall) {
-            canvas.drawCircle((float) ballX, (float) ballY, RADIUS, ballPaint);
+            canvas.drawCircle(ballX, ballY, RADIUS, ballPaint);
         }
         if (showPaddle) {
-            canvas.drawRect(paddleX, (float) (HEIGHT*.85), (float) paddleX + paddleLength, (float) (HEIGHT*.85) + paddleHeight, paddlePaint);
+            canvas.drawRect(paddleX, (float) (HEIGHT*.85), paddleX + paddleLength, (float) (HEIGHT*.85) + paddleHeight, paddlePaint);
         }
 
         if (!drawBall) {
@@ -296,31 +296,23 @@ public class GameAnimationView extends View{
     }
 
     public interface PongEventListener {
-        public void onObjectReady(String title);
-        public void onDataLoaded(String data);
+        void onObjectReady(String title);
+        void onDataLoaded(String data);
     }
 
     private class Point{
         private float x;
         private float y;
 
-        public Point (float X, float Y){
+        Point (float X, float Y){
             x = X;
             y = Y;
         }
 
-        public void setX(float X){
-            x = X;
-        }
-
-        public void setY(float Y){
-            y = Y;
-        }
-
-        public Float getX(){
+        private Float getX(){
             return x;
         }
-        public Float getY(){
+        private Float getY(){
             return y;
         }
     }

@@ -19,6 +19,13 @@ import java.util.ArrayList;
  */
 
 public class GameAnimationView extends View{
+    // Field Constants
+    private final int CENTER = 0;
+    private final int MIDDLE = 1;
+    private final int END = 2;
+    private final Point[][] points;
+
+
     private final float SCREEN_CONSTANT = getResources().getDisplayMetrics().scaledDensity;
     private int HEIGHT = getResources().getDisplayMetrics().heightPixels;
     private int WIDTH = getResources().getDisplayMetrics().widthPixels;
@@ -43,7 +50,7 @@ public class GameAnimationView extends View{
         average = 100f;
         ballsMissed = 0;
         ballsHit = 0;
-        System.out.println(WIDTH + "\t" + HEIGHT);
+        points = this.generateVelocities();
         initPaints();
         this.listeners = new ArrayList<>();
         setOnTouchListener(new OnTouchListener() {
@@ -55,7 +62,7 @@ public class GameAnimationView extends View{
                         notifyAllListeners("Game Started");
                         ballX = RADIUS + rand.nextFloat() * (WIDTH - 2 * RADIUS);
                         ballY = RADIUS;
-                        ballVelY = (float) (.015*HEIGHT);
+                        ballVelY = (float) (.012*HEIGHT);
                         if (ballX <= WIDTH/2){
                             ballVelX = (float)(.01*WIDTH);
                         } else {
@@ -132,51 +139,36 @@ public class GameAnimationView extends View{
                 if(ballY >= HEIGHT - paddleHeight*8 && ballY <= (HEIGHT-paddleHeight*8) + paddleHeight && showPaddle) {
                     // If ball hits the center of the paddle.
                     if (ballX >= paddleX + (.3*paddleLength) && ballX <= paddleX + (.7*paddleLength)){
-                        ballVelY = -ballVelY;
-                        int change = returnRandom(3);
                         // Randomly determine the change when hitting the center of the paddle.
-                        switch (change){
-                            case 0: {
-                                // no change
-                                change = 0;
-                                break;
-                            }
-                            case 1: {
-                                // increase by 5dp.
-                                change = 5;
-                                break;
-                            }
-                            case 2: {
-                                // increase by 10dp.
-                                change = 10;
-                            }
+                        int speed = returnRandom(4);
+                        if (ballVelX > 0){
+                            ballVelX = points[CENTER][speed].getX();
+                        } else {
+                            ballVelX = points[CENTER][speed].getX()*(-1);
                         }
-                        // Make the change in X velocity only.
-                        switch(returnRandom(2)){
-                            case 0: {
-                                ballVelX = (float) ballVelX + change;
-                                break;
-                            }
-                            default: {
-                                ballVelX = (float) ballVelX - change;
-                            }
-                        }
+                        ballVelY = points[CENTER][speed].getY()*(-1);
                         ballsHit++;
                     }
                     // If ball strikes the paddle in the middle/outer sections
                     if ((ballX >= paddleX + (.2*paddleLength) && ballX < paddleX + (.3*paddleLength)) || (ballX > paddleX + (.7*paddleLength) && ballX <= paddleX + (.8*paddleLength))){
-                        ballVelY = -ballVelY;
-                        if (ballVelX > 0) {
-                            ballVelX = ballVelX + 10;
-                        } else ballVelX = ballVelX - 10;
+                        int speed = returnRandom(4);
+                        if (ballVelX > 0){
+                            ballVelX = points[MIDDLE][speed].getX();
+                        } else {
+                            ballVelX = points[MIDDLE][speed].getX()*(-1);
+                        }
+                        ballVelY = points[MIDDLE][speed].getY()*(-1);
                         ballsHit++;
                     }
                     // If ball strikes the paddle in the outer sections
                     if ((ballX >= paddleX && ballX < paddleX + (.2*paddleLength)) || (ballX > paddleX + (.8*paddleLength) && ballX <= paddleX + paddleLength)){
-                        ballVelY = -ballVelY;
-                        if (ballVelX > 0) {
-                            ballVelX = -ballVelX - 15;
-                        } else ballVelX = -ballVelX + 15;
+                        int speed = returnRandom(4);
+                        if (ballVelX > 0){
+                            ballVelX = points[END][speed].getX();
+                        } else {
+                            ballVelX = points[END][speed].getX()*(-1);
+                        }
+                        ballVelY = points[END][speed].getY()*(-1);
                         ballsHit++;
                     }
                 }
@@ -269,6 +261,29 @@ public class GameAnimationView extends View{
         initConstants();
     }
 
+    private Point[][] generateVelocities(){
+        Point[][] points = new Point[3][4];
+        // Middle points
+        points[0][0] = new Point(0f, .012f*HEIGHT);
+        points[0][1] = new Point(.010f*WIDTH, .012f*HEIGHT);
+        points[0][2] = new Point(.008f*WIDTH, .012f*HEIGHT);
+        points[0][3] = new Point(.012f*WIDTH, .012f*HEIGHT);
+
+        // Sub-Middle points
+        points[1][0] = new Point(.010f*WIDTH, .012f*HEIGHT);
+        points[1][1] = new Point(.008f*WIDTH, .014f*HEIGHT);
+        points[1][2] = new Point(.014f*WIDTH, .014f*HEIGHT);
+        points[1][3] = new Point(.012f*WIDTH, .014f*HEIGHT);
+
+        // End points
+        points[2][0] = new Point(.014f*WIDTH, .014f*HEIGHT);
+        points[2][1] = new Point(.016f*WIDTH, .018f*HEIGHT);
+        points[2][2] = new Point(.018f*WIDTH, .022f*HEIGHT);
+        points[2][3] = new Point(.020f*WIDTH, .026f*HEIGHT);
+
+        return points;
+    }
+
     private int returnRandom(int size){
         SecureRandom temp = new SecureRandom();
         return temp.nextInt(size);
@@ -283,6 +298,31 @@ public class GameAnimationView extends View{
     public interface PongEventListener {
         public void onObjectReady(String title);
         public void onDataLoaded(String data);
+    }
+
+    private class Point{
+        private float x;
+        private float y;
+
+        public Point (float X, float Y){
+            x = X;
+            y = Y;
+        }
+
+        public void setX(float X){
+            x = X;
+        }
+
+        public void setY(float Y){
+            y = Y;
+        }
+
+        public Float getX(){
+            return x;
+        }
+        public Float getY(){
+            return y;
+        }
     }
 }
 

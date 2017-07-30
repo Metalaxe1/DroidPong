@@ -28,10 +28,10 @@ public class StartGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("  Droid Pong");
+            actionBar.setTitle("Droid Pong");
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1946BA")));
             actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setIcon(R.drawable.single);
+            actionBar.setIcon(R.drawable.pong_icon2);
             actionBar.setDisplayUseLogoEnabled(true);
         }
         handler = new Handler();

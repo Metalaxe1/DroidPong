@@ -24,8 +24,7 @@ public class GameAnimationView extends View{
     private final int MIDDLE = 1;
     private final int END = 2;
     private final Point[][] points;
-
-
+    // Private class fields
     private final float SCREEN_CONSTANT = getResources().getDisplayMetrics().scaledDensity;
     private int HEIGHT = getResources().getDisplayMetrics().heightPixels;
     private int WIDTH = getResources().getDisplayMetrics().widthPixels;
@@ -62,7 +61,7 @@ public class GameAnimationView extends View{
                         notifyAllListeners("Game Started");
                         ballX = RADIUS + rand.nextFloat() * (WIDTH - 2 * RADIUS);
                         ballY = RADIUS;
-                        ballVelY = (float) (.012*HEIGHT);
+                        ballVelY = (float) (.014*HEIGHT);
                         if (ballX <= WIDTH/2){
                             ballVelX = (float)(.01*WIDTH);
                         } else {
@@ -80,7 +79,7 @@ public class GameAnimationView extends View{
                     return true;
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP){
-                    showPaddle = false;
+                    //showPaddle = false;
                     return true;
                 }
                 return false;
@@ -264,19 +263,19 @@ public class GameAnimationView extends View{
     private Point[][] generateVelocities(){
         Point[][] points = new Point[3][4];
         // Middle points
-        points[0][0] = new Point(0f, .012f*HEIGHT);
-        points[0][1] = new Point(.010f*WIDTH, .012f*HEIGHT);
-        points[0][2] = new Point(.008f*WIDTH, .012f*HEIGHT);
-        points[0][3] = new Point(.012f*WIDTH, .012f*HEIGHT);
+        points[0][0] = new Point(0f, .016f*HEIGHT);
+        points[0][1] = new Point(.010f*WIDTH, .014f*HEIGHT);
+        points[0][2] = new Point(.008f*WIDTH, .014f*HEIGHT);
+        points[0][3] = new Point(.012f*WIDTH, .014f*HEIGHT);
 
         // Sub-Middle points
-        points[1][0] = new Point(.010f*WIDTH, .012f*HEIGHT);
-        points[1][1] = new Point(.008f*WIDTH, .014f*HEIGHT);
-        points[1][2] = new Point(.014f*WIDTH, .014f*HEIGHT);
-        points[1][3] = new Point(.012f*WIDTH, .014f*HEIGHT);
+        points[1][0] = new Point(.010f*WIDTH, .014f*HEIGHT);
+        points[1][1] = new Point(.008f*WIDTH, .016f*HEIGHT);
+        points[1][2] = new Point(.014f*WIDTH, .016f*HEIGHT);
+        points[1][3] = new Point(.012f*WIDTH, .016f*HEIGHT);
 
         // End points
-        points[2][0] = new Point(.014f*WIDTH, .014f*HEIGHT);
+        points[2][0] = new Point(.014f*WIDTH, .016f*HEIGHT);
         points[2][1] = new Point(.016f*WIDTH, .018f*HEIGHT);
         points[2][2] = new Point(.018f*WIDTH, .022f*HEIGHT);
         points[2][3] = new Point(.020f*WIDTH, .026f*HEIGHT);

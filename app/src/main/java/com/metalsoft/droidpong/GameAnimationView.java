@@ -140,7 +140,7 @@ public class GameAnimationView extends View{
         public void run() {
             if (drawBall) {
                 // If ball hits paddle.
-                if(ballY >= HEIGHT - paddleHeight*8 && ballY <= (HEIGHT-paddleHeight*8) + paddleHeight && showPaddle) {
+                if(ballY >= HEIGHT*.85 - paddleHeight && ballY <= (HEIGHT*.85) + paddleHeight && showPaddle) {
                     // If ball hits the center of the paddle.
                     if (ballX >= paddleX + (.4*paddleLength) && ballX <= paddleX + (.6*paddleLength)){
                         // Randomly determine the change when hitting the center of the paddle.

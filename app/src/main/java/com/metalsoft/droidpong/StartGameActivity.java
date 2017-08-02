@@ -11,7 +11,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 /**
@@ -37,6 +39,11 @@ public class StartGameActivity extends AppCompatActivity {
         handler = new Handler();
         singleStart = (Button) findViewById(R.id.button_single_start);
         Button hthButton = (Button) findViewById(R.id.button_hth_start);
+        LinearLayout optionsLayout = (LinearLayout) findViewById(R.id.layout_game_options);
+        ViewGroup.LayoutParams params = optionsLayout.getLayoutParams();
+        int width = getResources().getDisplayMetrics().widthPixels;
+        params.width = (int) (width*.80);
+        optionsLayout.setLayoutParams(params);
         hthButton.setVisibility(View.GONE);
         //scoresDatabase = new ScoresDatabase(this);
         /*
@@ -68,7 +75,7 @@ public class StartGameActivity extends AppCompatActivity {
         singleStart.setBackgroundColor(Color.parseColor("#1946BA"));
         singleStart.setTextColor(Color.WHITE);
         singleStart.invalidate();
-        handler.postDelayed(delayedSingleButtonPress, 250);
+        handler.postDelayed(delayedSingleButtonPress, 100);
     }
 
     private Runnable delayedSingleButtonPress = new Runnable() {

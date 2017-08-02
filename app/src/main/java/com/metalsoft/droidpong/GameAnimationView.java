@@ -30,7 +30,7 @@ public class GameAnimationView extends View{
     private int HEIGHT = getResources().getDisplayMetrics().heightPixels;
     private int WIDTH = getResources().getDisplayMetrics().widthPixels;
     private float RADIUS, paddleLength, paddleHeight, ballX, ballY, ballVelX, ballVelY, paddleX, average;
-    private int ballsMissed, ballsHit;
+    private int ballsMissed, ballsHit, ballSpeedIndex = 0;
     private Handler handler;
     private Paint ballPaint, paddlePaint, scorePaint, courtPaint;
     private boolean showPaddle, running, drawBall, gameOver;
@@ -144,49 +144,49 @@ public class GameAnimationView extends View{
                     // If ball hits the center of the paddle.
                     if (ballX >= paddleX + (.4*paddleLength) && ballX <= paddleX + (.6*paddleLength)){
                         // Randomly determine the change when hitting the center of the paddle.
-                        int speed = returnRandom(4);
                         if (ballVelX > 0){
-                            ballVelX = points[CENTER][speed].getX();
+                            ballVelX = points[CENTER][ballSpeedIndex].getX();
                         } else if (ballVelX < 0){
-                            ballVelX = points[CENTER][speed].getX()*(-1);
+                            ballVelX = points[CENTER][ballSpeedIndex].getX()*(-1);
                         } else {
                             switch (returnRandom(2)){
                                 case 0:{
-                                    ballVelX = points[END][speed].getX();
+                                    ballVelX = points[CENTER][ballSpeedIndex].getX();
                                     break;
                                 }
                                 default: {
-                                    ballVelX = points[END][speed].getX()*(-1);
+                                    ballVelX = points[CENTER][ballSpeedIndex].getX()*(-1);
                                 }
                             }
                         }
-                        ballVelY = points[CENTER][speed].getY()*(-1);
+                        ballVelY = points[CENTER][ballSpeedIndex].getY()*(-1);
+                        calculateBallSpeedIndex();
                         ballsHit++;
                         paddleSound.start();
                     }
                     // If ball strikes the paddle in the middle/outer sections
                     if ((ballX >= paddleX + (.2*paddleLength) && ballX < paddleX + (.4*paddleLength)) || (ballX > paddleX + (.6*paddleLength) && ballX <= paddleX + (.8*paddleLength))){
-                        int speed = returnRandom(4);
                         if (ballVelX > 0){
-                            ballVelX = points[MIDDLE][speed].getX();
+                            ballVelX = points[MIDDLE][ballSpeedIndex].getX();
                         } else {
-                            ballVelX = points[MIDDLE][speed].getX()*(-1);
+                            ballVelX = points[MIDDLE][ballSpeedIndex].getX()*(-1);
                         }
-                        ballVelY = points[MIDDLE][speed].getY()*(-1);
+                        ballVelY = points[MIDDLE][ballSpeedIndex].getY()*(-1);
                         ballsHit++;
                         paddleSound.start();
+                        calculateBallSpeedIndex();
                     }
                     // If ball strikes the paddle in the outer sections
                     if ((ballX >= paddleX && ballX < paddleX + (.2*paddleLength)) || (ballX > paddleX + (.8*paddleLength) && ballX <= paddleX + paddleLength)){
-                        int speed = returnRandom(4);
                         if (ballVelX > 0){
-                            ballVelX = points[END][speed].getX();
+                            ballVelX = points[END][ballSpeedIndex].getX();
                         } else {
-                            ballVelX = points[END][speed].getX()*(-1);
+                            ballVelX = points[END][ballSpeedIndex].getX()*(-1);
                         }
-                        ballVelY = points[END][speed].getY()*(-1);
+                        ballVelY = points[END][ballSpeedIndex].getY()*(-1);
                         ballsHit++;
                         paddleSound.start();
+                        calculateBallSpeedIndex();
                     }
                 }
                 // Left side of the court was hit.
@@ -285,15 +285,15 @@ public class GameAnimationView extends View{
         Point[][] points = new Point[3][4];
         // Middle points
         points[0][0] = new Point(0f, .016f*HEIGHT);
-        points[0][1] = new Point(.010f*WIDTH, .014f*HEIGHT);
-        points[0][2] = new Point(.008f*WIDTH, .014f*HEIGHT);
+        points[0][1] = new Point(.008f*WIDTH, .014f*HEIGHT);
+        points[0][2] = new Point(.010f*WIDTH, .014f*HEIGHT);
         points[0][3] = new Point(.012f*WIDTH, .014f*HEIGHT);
 
         // Sub-Middle points
-        points[1][0] = new Point(.010f*WIDTH, .014f*HEIGHT);
-        points[1][1] = new Point(.008f*WIDTH, .016f*HEIGHT);
-        points[1][2] = new Point(.014f*WIDTH, .016f*HEIGHT);
-        points[1][3] = new Point(.012f*WIDTH, .016f*HEIGHT);
+        points[1][0] = new Point(.008f*WIDTH, .014f*HEIGHT);
+        points[1][1] = new Point(.010f*WIDTH, .016f*HEIGHT);
+        points[1][2] = new Point(.012f*WIDTH, .016f*HEIGHT);
+        points[1][3] = new Point(.014f*WIDTH, .018f*HEIGHT);
 
         // End points
         points[2][0] = new Point(.014f*WIDTH, .016f*HEIGHT);
@@ -307,6 +307,22 @@ public class GameAnimationView extends View{
     private int returnRandom(int size){
         SecureRandom temp = new SecureRandom();
         return temp.nextInt(size);
+    }
+
+    private void calculateBallSpeedIndex(){
+        switch (returnRandom(2)){
+            case 0: {
+                ballSpeedIndex++;
+                if (ballSpeedIndex > 3)
+                    ballSpeedIndex = 3;
+                break;
+            }
+            default: {
+                ballSpeedIndex--;
+                if (ballSpeedIndex < 0)
+                    ballSpeedIndex = 0;
+            }
+        }
     }
 
     private void notifyAllListeners(String message){

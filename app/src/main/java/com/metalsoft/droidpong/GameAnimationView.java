@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -36,6 +37,7 @@ public class GameAnimationView extends View{
     private SecureRandom rand;
     private DecimalFormat formatter;
     private ArrayList<PongEventListener> listeners;
+    private MediaPlayer wall, paddle;
 
     public GameAnimationView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -52,6 +54,8 @@ public class GameAnimationView extends View{
         points = this.generateVelocities();
         initPaints();
         this.listeners = new ArrayList<>();
+        wall = MediaPlayer.create(context, R.raw.wall);
+        paddle = MediaPlayer.create(context, R.raw.paddle);
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -79,7 +83,7 @@ public class GameAnimationView extends View{
                     return true;
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP){
-                    //showPaddle = false;
+                    showPaddle = false;
                     return true;
                 }
                 return false;
@@ -170,20 +174,24 @@ public class GameAnimationView extends View{
                         ballVelY = points[END][speed].getY()*(-1);
                         ballsHit++;
                     }
+                    paddle.start();
                 }
                 // Left side of the court was hit.
                 if (ballX <= RADIUS) {
                     ballVelX = -ballVelX;
                     ballX = ballX + 5;
+                    wall.start();
                 }
                 // Right side of the court was hit.
                 if (ballX >= WIDTH - RADIUS){
                     ballVelX = -ballVelX;
                     ballX = ballX - 5;
+                    wall.start();
                 }
                 // Top was hit.
                 if (ballY < RADIUS) {
                     ballVelY = -ballVelY;
+                    wall.start();
                 }
                 // Volley was missed.
                 if (ballY >= HEIGHT + RADIUS) {

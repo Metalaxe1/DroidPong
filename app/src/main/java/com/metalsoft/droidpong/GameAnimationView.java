@@ -37,7 +37,7 @@ public class GameAnimationView extends View{
     private SecureRandom rand;
     private DecimalFormat formatter;
     private ArrayList<PongEventListener> listeners;
-    private MediaPlayer wall, paddle;
+    private MediaPlayer sideSound, paddleSound, topSound;
 
     public GameAnimationView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -54,8 +54,9 @@ public class GameAnimationView extends View{
         points = this.generateVelocities();
         initPaints();
         this.listeners = new ArrayList<>();
-        wall = MediaPlayer.create(context, R.raw.wall);
-        paddle = MediaPlayer.create(context, R.raw.paddle);
+        sideSound = MediaPlayer.create(context, R.raw.wall);
+        topSound = MediaPlayer.create(context, R.raw.wall);
+        paddleSound = MediaPlayer.create(context, R.raw.paddle);
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -141,19 +142,30 @@ public class GameAnimationView extends View{
                 // If ball hits paddle.
                 if(ballY >= HEIGHT - paddleHeight*8 && ballY <= (HEIGHT-paddleHeight*8) + paddleHeight && showPaddle) {
                     // If ball hits the center of the paddle.
-                    if (ballX >= paddleX + (.3*paddleLength) && ballX <= paddleX + (.7*paddleLength)){
+                    if (ballX >= paddleX + (.4*paddleLength) && ballX <= paddleX + (.6*paddleLength)){
                         // Randomly determine the change when hitting the center of the paddle.
                         int speed = returnRandom(4);
                         if (ballVelX > 0){
                             ballVelX = points[CENTER][speed].getX();
-                        } else {
+                        } else if (ballVelX < 0){
                             ballVelX = points[CENTER][speed].getX()*(-1);
+                        } else {
+                            switch (returnRandom(2)){
+                                case 0:{
+                                    ballVelX = points[END][speed].getX();
+                                    break;
+                                }
+                                default: {
+                                    ballVelX = points[END][speed].getX()*(-1);
+                                }
+                            }
                         }
                         ballVelY = points[CENTER][speed].getY()*(-1);
                         ballsHit++;
+                        paddleSound.start();
                     }
                     // If ball strikes the paddle in the middle/outer sections
-                    if ((ballX >= paddleX + (.2*paddleLength) && ballX < paddleX + (.3*paddleLength)) || (ballX > paddleX + (.7*paddleLength) && ballX <= paddleX + (.8*paddleLength))){
+                    if ((ballX >= paddleX + (.2*paddleLength) && ballX < paddleX + (.4*paddleLength)) || (ballX > paddleX + (.6*paddleLength) && ballX <= paddleX + (.8*paddleLength))){
                         int speed = returnRandom(4);
                         if (ballVelX > 0){
                             ballVelX = points[MIDDLE][speed].getX();
@@ -162,6 +174,7 @@ public class GameAnimationView extends View{
                         }
                         ballVelY = points[MIDDLE][speed].getY()*(-1);
                         ballsHit++;
+                        paddleSound.start();
                     }
                     // If ball strikes the paddle in the outer sections
                     if ((ballX >= paddleX && ballX < paddleX + (.2*paddleLength)) || (ballX > paddleX + (.8*paddleLength) && ballX <= paddleX + paddleLength)){
@@ -173,25 +186,25 @@ public class GameAnimationView extends View{
                         }
                         ballVelY = points[END][speed].getY()*(-1);
                         ballsHit++;
+                        paddleSound.start();
                     }
-                    paddle.start();
                 }
                 // Left side of the court was hit.
                 if (ballX <= RADIUS) {
                     ballVelX = -ballVelX;
                     ballX = ballX + 5;
-                    wall.start();
+                    sideSound.start();
                 }
                 // Right side of the court was hit.
                 if (ballX >= WIDTH - RADIUS){
                     ballVelX = -ballVelX;
                     ballX = ballX - 5;
-                    wall.start();
+                    sideSound.start();
                 }
                 // Top was hit.
                 if (ballY < RADIUS) {
                     ballVelY = -ballVelY;
-                    wall.start();
+                    topSound.start();
                 }
                 // Volley was missed.
                 if (ballY >= HEIGHT + RADIUS) {

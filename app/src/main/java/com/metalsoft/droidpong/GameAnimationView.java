@@ -37,7 +37,7 @@ public class GameAnimationView extends View{
     private SecureRandom rand;
     private DecimalFormat formatter;
     private ArrayList<PongEventListener> listeners;
-    private MediaPlayer sideSound, paddleSound, topSound;
+    private MediaPlayer sideSound, paddleSound, topSound, missedSound;
 
     public GameAnimationView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -57,10 +57,11 @@ public class GameAnimationView extends View{
         sideSound = MediaPlayer.create(context, R.raw.wall);
         topSound = MediaPlayer.create(context, R.raw.wall);
         paddleSound = MediaPlayer.create(context, R.raw.paddle);
+        missedSound = MediaPlayer.create(context, R.raw.ball_missed);
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN){
+                if (event.getAction() == MotionEvent.ACTION_DOWN && event.getY() >= HEIGHT*.75){
                     showPaddle = true;
                     if (!running && !gameOver){
                         notifyAllListeners("Game Started");
@@ -122,7 +123,7 @@ public class GameAnimationView extends View{
     // Initialize all of the screen constants.
     private void initConstants(){
         RADIUS = (float)(.03*WIDTH);
-        paddleLength = (float)(.3*WIDTH);
+        paddleLength = (float)(.2*WIDTH);
         paddleHeight = (float) (.018*HEIGHT);
         courtPaint.setStrokeWidth(RADIUS);
     }
@@ -215,6 +216,7 @@ public class GameAnimationView extends View{
                         running = false;
                         gameOver = true;
                     } else {
+                        missedSound.start();
                         handler.postDelayed(missedBall, 1000);
                     }
                 }
@@ -252,7 +254,7 @@ public class GameAnimationView extends View{
         canvas.drawCircle(WIDTH/2, HEIGHT/2, RADIUS*4, courtPaint);
 
         scorePaint.setColor(Color.WHITE);
-        canvas.drawText("Average Score: " + formatter.format(average) + "%", (float) (WIDTH / 2) + (120*SCREEN_CONSTANT), (float) 60*SCREEN_CONSTANT, scorePaint);
+        canvas.drawText("Balls Returned: " + String.valueOf(ballsHit), (float) (float) (WIDTH / 2) + (90*SCREEN_CONSTANT), (float) 60*SCREEN_CONSTANT, scorePaint);
 
         if (drawBall) {
             canvas.drawCircle(ballX, ballY, RADIUS, ballPaint);
@@ -263,9 +265,9 @@ public class GameAnimationView extends View{
 
         if (!drawBall) {
             scorePaint.setColor(Color.GREEN);
-            canvas.drawText("Balls Hit: " + String.valueOf(ballsHit), (float) (WIDTH / 2) + (75*SCREEN_CONSTANT), (float) 120*SCREEN_CONSTANT, scorePaint);
+            canvas.drawText("Hit/Miss Ratio: " + formatter.format(average) + "%", (float) (WIDTH / 2) + (120*SCREEN_CONSTANT), (float) 120*SCREEN_CONSTANT, scorePaint);
             scorePaint.setColor(Color.RED);
-            canvas.drawText("Balls Missed: " + String.valueOf(ballsMissed), (float) (WIDTH / 2) + (75*SCREEN_CONSTANT), (float) 160*SCREEN_CONSTANT, scorePaint);
+            canvas.drawText("Balls Remaining: " + String.valueOf(10 - ballsMissed), (float) (WIDTH / 2) + (95*SCREEN_CONSTANT), (float) 160*SCREEN_CONSTANT, scorePaint);
         }
         if (running) {
             handler.post(r);
@@ -284,22 +286,22 @@ public class GameAnimationView extends View{
     private Point[][] generateVelocities(){
         Point[][] points = new Point[3][4];
         // Middle points
-        points[0][0] = new Point(0f, .016f*HEIGHT);
-        points[0][1] = new Point(.008f*WIDTH, .014f*HEIGHT);
-        points[0][2] = new Point(.010f*WIDTH, .014f*HEIGHT);
-        points[0][3] = new Point(.012f*WIDTH, .014f*HEIGHT);
+        points[0][0] = new Point(0f, .018f*HEIGHT);
+        points[0][1] = new Point(.008f*WIDTH, .020f*HEIGHT);
+        points[0][2] = new Point(.010f*WIDTH, .022f*HEIGHT);
+        points[0][3] = new Point(.012f*WIDTH, .024f*HEIGHT);
 
         // Sub-Middle points
-        points[1][0] = new Point(.008f*WIDTH, .014f*HEIGHT);
-        points[1][1] = new Point(.010f*WIDTH, .016f*HEIGHT);
-        points[1][2] = new Point(.012f*WIDTH, .016f*HEIGHT);
-        points[1][3] = new Point(.014f*WIDTH, .018f*HEIGHT);
+        points[1][0] = new Point(.010f*WIDTH, .016f*HEIGHT);
+        points[1][1] = new Point(.012f*WIDTH, .018f*HEIGHT);
+        points[1][2] = new Point(.014f*WIDTH, .020f*HEIGHT);
+        points[1][3] = new Point(.016f*WIDTH, .022f*HEIGHT);
 
         // End points
-        points[2][0] = new Point(.014f*WIDTH, .016f*HEIGHT);
-        points[2][1] = new Point(.016f*WIDTH, .018f*HEIGHT);
-        points[2][2] = new Point(.018f*WIDTH, .022f*HEIGHT);
-        points[2][3] = new Point(.020f*WIDTH, .026f*HEIGHT);
+        points[2][0] = new Point(.016f*WIDTH, .018f*HEIGHT);
+        points[2][1] = new Point(.018f*WIDTH, .020f*HEIGHT);
+        points[2][2] = new Point(.020f*WIDTH, .024f*HEIGHT);
+        points[2][3] = new Point(.022f*WIDTH, .028f*HEIGHT);
 
         return points;
     }
@@ -331,7 +333,7 @@ public class GameAnimationView extends View{
         }
     }
 
-    public interface PongEventListener {
+    interface PongEventListener {
         void onDataLoaded(String data);
     }
 

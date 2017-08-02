@@ -332,7 +332,6 @@ public class GameAnimationView extends View{
     }
 
     public interface PongEventListener {
-        void onObjectReady(String title);
         void onDataLoaded(String data);
     }
 

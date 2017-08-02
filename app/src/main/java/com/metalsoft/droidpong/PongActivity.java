@@ -25,11 +25,6 @@ public class PongActivity extends AppCompatActivity {
         handler = new Handler();
         animation.setCustomObjectListener(new GameAnimationView.PongEventListener() {
             @Override
-            public void onObjectReady(String title) {
-
-            }
-
-            @Override
             public void onDataLoaded(String data) {
                 if (data.equals("Game Over")){
                     handler.postDelayed(endGame, 3000);

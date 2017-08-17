@@ -19,26 +19,21 @@ import java.util.ArrayList;
 public class PongActivity extends AppCompatActivity {
 
     private Handler handler;
+    private ScoresDatabase db;
     private Button buttonEnd;
     private TextView ballStartText, gameOverText;
-    private int lowestScore = 0;
+    private int finalScore = 0;
+    private double finalRatio = 0.0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pong);
-        Intent intent= getIntent();
-        Bundle bundle = intent.getExtras();
-        if (bundle!= null){
-            lowestScore = (int) bundle.get("lowest_score");
-        }
         GameAnimationView animation = (GameAnimationView) findViewById(R.id.view);
+        db = new ScoresDatabase(getApplicationContext());
         handler = new Handler();
         animation.setCustomObjectListener(new GameAnimationView.PongEventListener() {
             @Override
             public void onDataLoaded(String data) {
-                if (data.equals("Game Over")){
-                    handler.postDelayed(endGame, 3000);
-                }
                 if (data.equals("Missed Ball")){
                     buttonEnd.setVisibility(View.VISIBLE);
                     ballStartText.setVisibility(View.VISIBLE);
@@ -47,14 +42,23 @@ public class PongActivity extends AppCompatActivity {
                     buttonEnd.setVisibility(View.GONE);
                     ballStartText.setVisibility(View.GONE);
                 }
-                if (data.equals("Game Over")){
-                    gameOverText.setVisibility(View.VISIBLE);
-                }
                 if (data.contains("▲")){
                     String[] pieces = data.split("▲");
-                    ScoresDatabase db = new ScoresDatabase(getApplicationContext());
-                    if (pieces[0].equals("Score") && (Integer.valueOf(pieces[1]) > db.returnLowestScore()) || db.returnTotalCount() < 5){
-                        db.addNewScore("Metalaxe", Integer.valueOf(pieces[1]), Double.valueOf(pieces[2]));
+                    if (pieces[0].equals("Score")){
+                        gameOverText.setVisibility(View.VISIBLE);
+                        if ((Integer.valueOf(pieces[1]) > db.returnLowestScore()) || db.returnTotalCount() < 5) {
+                            finalScore = Integer.valueOf(pieces[1]);
+                            finalRatio = Double.valueOf(pieces[2]);
+                            Intent intent = new Intent(PongActivity.this, NewHighScoreActivity.class);
+                            startActivityForResult(intent, 1001);
+                        } else {
+                            handler.postDelayed(endGame, 3000);
+                        }
+
+
+
+
+                        //db.addNewScore("Metalaxe", Integer.valueOf(pieces[1]), Double.valueOf(pieces[2]));
                     }
                 }
 
@@ -92,4 +96,16 @@ public class PongActivity extends AppCompatActivity {
     };
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1001){
+            if (resultCode == RESULT_OK){
+                Bundle results = data.getExtras();
+                String playerName = (String) results.get("name");
+                db.addNewScore(playerName, finalScore, finalRatio);
+                handler.postDelayed(endGame, 3000);
+            }
+        }
+    }
 }

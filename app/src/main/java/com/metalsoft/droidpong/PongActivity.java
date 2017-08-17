@@ -1,7 +1,6 @@
 package com.metalsoft.droidpong;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,8 +8,6 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -53,11 +50,6 @@ public class PongActivity extends AppCompatActivity {
                         } else {
                             handler.postDelayed(endGame, 3000);
                         }
-
-
-
-
-                        //db.addNewScore("Metalaxe", Integer.valueOf(pieces[1]), Double.valueOf(pieces[2]));
                     }
                 }
 

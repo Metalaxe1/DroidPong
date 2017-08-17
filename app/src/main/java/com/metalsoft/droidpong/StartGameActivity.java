@@ -14,7 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+
+import java.util.ArrayList;
 
 /**
  * Created by Anthony Ratliff on 7/17/2017.
@@ -23,7 +26,8 @@ import android.widget.Toast;
 public class StartGameActivity extends AppCompatActivity {
     private Button singleStart;
     private Handler handler;
-    //private ScoresDatabase scoresDatabase;
+    private ScoresDatabase scoresDatabase;
+    private ArrayList<Player> players = new ArrayList<>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,28 +49,8 @@ public class StartGameActivity extends AppCompatActivity {
         params.width = (int) (width*.80);
         optionsLayout.setLayoutParams(params);
         hthButton.setVisibility(View.GONE);
-        //scoresDatabase = new ScoresDatabase(this);
-        /*
-        Cursor result = scoresDatabase.getAllScores();
-        if (result.getCount() == 0){
-            Toast.makeText(StartGameActivity.this, "There is NO data", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(StartGameActivity.this, "There is data. " + result.getCount() + " pieces of it.", Toast.LENGTH_LONG).show();
-            StringBuffer buffer = new StringBuffer();
-            while (result.moveToNext()){
-                buffer.append("Name: " + result.getString(0) + "\n");
-                buffer.append("Score: " + result.getDouble(1) + "\n");
-                buffer.append("Date: " + result.getString(2) + "\n\n");
-            }
-            showMessage("Scores", buffer.toString());
-
-        }
-        Boolean success = scoresDatabase.addNewScore("Jerry Brammer", 87.6, "7/26/2017");
-        if (success){
-            Toast.makeText(StartGameActivity.this, "Data was stored.", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(StartGameActivity.this, "Data was NOT stored.", Toast.LENGTH_LONG).show();
-        } */
+        scoresDatabase = new ScoresDatabase(this);
+        //scoresDatabase.removeAllData();
     }
 
     public void startSingleGameClick(View v){
@@ -87,6 +71,7 @@ public class StartGameActivity extends AppCompatActivity {
             singleStart.setTextColor(Color.parseColor("#1946BA"));
             singleStart.invalidate();
             Intent intent = new Intent(StartGameActivity.this, PongActivity.class);
+            intent.putExtra("lowest_score", returnLowestScore());
             startActivity(intent);
         }
     };
@@ -101,5 +86,43 @@ public class StartGameActivity extends AppCompatActivity {
         builder.setTitle(title);
         builder.setMessage(message);
         builder.show();
+    }
+
+    public int returnLowestScore(){
+        int lowest = 0;
+        if (players != null && players.size() > 0){
+            for (int counter = 0;counter < players.size();counter++){
+                if (lowest == 0 || lowest > players.get(counter).getBallHits()){
+                    lowest = players.get(counter).getBallHits();
+                }
+            }
+        }
+        return lowest;
+    }
+
+    private void loadScoresList(){
+        players = new ArrayList<>();
+        RelativeLayout scoresLayout = (RelativeLayout) findViewById(R.id.layout_score_list);
+        int lowestScore = 0;
+        Cursor result = scoresDatabase.getAllScores();
+        if (result.getCount() == 0){
+            scoresLayout.setVisibility(View.GONE);
+        } else {
+            ListView highScores = (ListView) findViewById(R.id.high_scores_list);
+            while (result.moveToNext()){
+                players.add(new Player(result.getString(0), result.getInt(1), result.getDouble(2)));
+                if (lowestScore == 0  || lowestScore > result.getInt(1)){
+                    lowestScore = result.getInt(1);
+                }
+            }
+            highScores.setAdapter(new HighScoreAdapter(this, players));
+            scoresLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadScoresList();
     }
 }

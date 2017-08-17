@@ -1,5 +1,7 @@
 package com.metalsoft.droidpong;
 
+import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +9,8 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -17,10 +21,16 @@ public class PongActivity extends AppCompatActivity {
     private Handler handler;
     private Button buttonEnd;
     private TextView ballStartText, gameOverText;
+    private int lowestScore = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pong);
+        Intent intent= getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle!= null){
+            lowestScore = (int) bundle.get("lowest_score");
+        }
         GameAnimationView animation = (GameAnimationView) findViewById(R.id.view);
         handler = new Handler();
         animation.setCustomObjectListener(new GameAnimationView.PongEventListener() {
@@ -39,6 +49,13 @@ public class PongActivity extends AppCompatActivity {
                 }
                 if (data.equals("Game Over")){
                     gameOverText.setVisibility(View.VISIBLE);
+                }
+                if (data.contains("▲")){
+                    String[] pieces = data.split("▲");
+                    ScoresDatabase db = new ScoresDatabase(getApplicationContext());
+                    if (pieces[0].equals("Score") && (Integer.valueOf(pieces[1]) > db.returnLowestScore()) || db.returnTotalCount() < 5){
+                        db.addNewScore("Metalaxe", Integer.valueOf(pieces[1]), Double.valueOf(pieces[2]));
+                    }
                 }
 
             }

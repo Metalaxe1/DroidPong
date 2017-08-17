@@ -24,6 +24,7 @@ public class GameAnimationView extends View{
     private final int CENTER = 0;
     private final int MIDDLE = 1;
     private final int END = 2;
+    private final int GAME_BALLS = 2;
     private final Point[][] points;
     // Private class fields
     private final float SCREEN_CONSTANT = getResources().getDisplayMetrics().scaledDensity;
@@ -211,8 +212,9 @@ public class GameAnimationView extends View{
                 if (ballY >= HEIGHT + RADIUS) {
                     ballsMissed++;
                     drawBall = false;
-                    if (ballsMissed == 10){
+                    if (ballsMissed == GAME_BALLS){
                         notifyAllListeners("Game Over");
+                        notifyAllListeners("Score▲" + String.valueOf(ballsHit) + "▲" + formatter.format(ballsHit/(float)(ballsMissed+ballsHit)*100));
                         running = false;
                         gameOver = true;
                     } else {
@@ -267,7 +269,7 @@ public class GameAnimationView extends View{
             scorePaint.setColor(Color.GREEN);
             canvas.drawText("Hit/Miss Ratio: " + formatter.format(average) + "%", (float) (WIDTH / 2) + (120*SCREEN_CONSTANT), (float) 120*SCREEN_CONSTANT, scorePaint);
             scorePaint.setColor(Color.RED);
-            canvas.drawText("Balls Remaining: " + String.valueOf(10 - ballsMissed), (float) (WIDTH / 2) + (95*SCREEN_CONSTANT), (float) 160*SCREEN_CONSTANT, scorePaint);
+            canvas.drawText("Balls Remaining: " + String.valueOf(GAME_BALLS - ballsMissed), (float) (WIDTH / 2) + (95*SCREEN_CONSTANT), (float) 160*SCREEN_CONSTANT, scorePaint);
         }
         if (running) {
             handler.post(r);

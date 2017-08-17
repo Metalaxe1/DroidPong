@@ -49,8 +49,7 @@ public class PongActivity extends AppCompatActivity {
                         if ((Integer.valueOf(pieces[1]) > db.returnLowestScore()) || db.returnTotalCount() < 5) {
                             finalScore = Integer.valueOf(pieces[1]);
                             finalRatio = Double.valueOf(pieces[2]);
-                            Intent intent = new Intent(PongActivity.this, NewHighScoreActivity.class);
-                            startActivityForResult(intent, 1001);
+                            handler.postDelayed(highScore, 3000);
                         } else {
                             handler.postDelayed(endGame, 3000);
                         }
@@ -95,6 +94,14 @@ public class PongActivity extends AppCompatActivity {
         }
     };
 
+    private Runnable highScore = new Runnable() {
+        @Override
+        public void run() {
+            Intent intent = new Intent(PongActivity.this, NewHighScoreActivity.class);
+            startActivityForResult(intent, 1001);
+        }
+    };
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -104,7 +111,7 @@ public class PongActivity extends AppCompatActivity {
                 Bundle results = data.getExtras();
                 String playerName = (String) results.get("name");
                 db.addNewScore(playerName, finalScore, finalRatio);
-                handler.postDelayed(endGame, 3000);
+                finish();
             }
         }
     }

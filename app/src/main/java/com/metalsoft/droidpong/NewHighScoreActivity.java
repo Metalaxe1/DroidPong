@@ -25,8 +25,6 @@ public class NewHighScoreActivity extends AppCompatActivity {
     public void saveScore(View view) {
         TextView txtName = (TextView) findViewById(R.id.score_name);
         if (txtName != null && txtName.getText().toString().length() > 0){
-            //Bundle data = new Bundle();
-            //data.putString("name", txtName.getText().toString());
             Intent intent = new Intent();
             intent.putExtra("name", txtName.getText().toString());
             if (getParent() == null) {

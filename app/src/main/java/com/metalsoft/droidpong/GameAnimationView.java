@@ -24,7 +24,7 @@ public class GameAnimationView extends View{
     private final int CENTER = 0;
     private final int MIDDLE = 1;
     private final int END = 2;
-    private final int GAME_BALLS = 2;
+    private final int GAME_BALLS = 10;
     private final Point[][] points;
     // Private class fields
     private final float SCREEN_CONSTANT = getResources().getDisplayMetrics().scaledDensity;

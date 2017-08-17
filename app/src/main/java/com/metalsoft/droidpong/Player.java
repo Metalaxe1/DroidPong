@@ -6,7 +6,6 @@ package com.metalsoft.droidpong;
 
 public class Player {
 
-    private int position;
     private String playerName;
     private int ballHits;
     private double gameRatio;
@@ -42,35 +41,15 @@ public class Player {
         }
     }
 
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
     public String getPlayerName() {
         return playerName;
-    }
-
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
     }
 
     public int getBallHits() {
         return ballHits;
     }
 
-    public void setBallHits(int ballHits) {
-        this.ballHits = ballHits;
-    }
-
     public double getGameRatio() {
         return gameRatio;
-    }
-
-    public void setGameRatio(double gameRatio) {
-        this.gameRatio = gameRatio;
     }
 }

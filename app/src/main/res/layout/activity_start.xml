@@ -16,17 +16,17 @@
         />
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#1946BA"
         android:paddingTop="18sp"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
         android:text="@string/software_name_version"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
 
-        />
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
@@ -40,6 +40,17 @@
         android:text="@string/company_name"
 
         />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+>
+
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -95,5 +106,86 @@
         android:text="@string/start_head_to_head_match" />
 
     </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="180dp"
+        android:id="@+id/layout_score_list"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:backgroundTintMode="multiply"
+        android:background="@drawable/custom_border"
+        android:layout_marginTop="20dp">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/high_score_title"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:text="High Scores" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/score_header_titles"
+            android:layout_below="@+id/high_score_title"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="16dp"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:text="Rank"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="48dp"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:text="Name"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:text="Total Hits"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:text="Ratio"
+                />
+
+        </LinearLayout>
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/high_scores_list"
+            android:layout_below="@+id/score_header_titles">
+
+
+        </ListView>
+
+
+
+</RelativeLayout>
+
+    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

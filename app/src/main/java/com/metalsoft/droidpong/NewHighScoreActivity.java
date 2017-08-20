@@ -2,6 +2,7 @@ package com.metalsoft.droidpong;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,7 +20,8 @@ public class NewHighScoreActivity extends AppCompatActivity {
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.loadUrl("file:///android_asset/fireworks.gif");
-
+        MediaPlayer cheerSound = MediaPlayer.create(this.getApplicationContext(), R.raw.cheer);
+        cheerSound.start();
     }
 
     public void saveScore(View view) {

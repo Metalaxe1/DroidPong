@@ -38,7 +38,6 @@ public class GameAnimationView extends View{
     private SecureRandom rand;
     private DecimalFormat formatter;
     private ArrayList<PongEventListener> listeners;
-    //private MediaPlayer sideSound, paddleSound, topSound, missedSound;
 
     public GameAnimationView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -55,10 +54,6 @@ public class GameAnimationView extends View{
         points = this.generateVelocities();
         initPaints();
         this.listeners = new ArrayList<>();
-        //sideSound = MediaPlayer.create(context, R.raw.wall);
-        //topSound = MediaPlayer.create(context, R.raw.wall);
-        //paddleSound = MediaPlayer.create(context, R.raw.paddle);
-        //missedSound = MediaPlayer.create(context, R.raw.ball_missed);
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -164,7 +159,6 @@ public class GameAnimationView extends View{
                         ballVelY = points[CENTER][ballSpeedIndex].getY()*(-1);
                         calculateBallSpeedIndex();
                         ballsHit++;
-                        //paddleSound.start();
                         notifyAllListeners("Paddle Sound");
                     }
                     // If ball strikes the paddle in the middle/outer sections
@@ -176,7 +170,6 @@ public class GameAnimationView extends View{
                         }
                         ballVelY = points[MIDDLE][ballSpeedIndex].getY()*(-1);
                         ballsHit++;
-                        //paddleSound.start();
                         notifyAllListeners("Paddle Sound");
                         calculateBallSpeedIndex();
                     }
@@ -189,7 +182,6 @@ public class GameAnimationView extends View{
                         }
                         ballVelY = points[END][ballSpeedIndex].getY()*(-1);
                         ballsHit++;
-                        //paddleSound.start();
                         notifyAllListeners("Paddle Sound");
                         calculateBallSpeedIndex();
                     }
@@ -198,20 +190,17 @@ public class GameAnimationView extends View{
                 if (ballX <= RADIUS) {
                     ballVelX = -ballVelX;
                     ballX = ballX + 5;
-                    //sideSound.start();
                     notifyAllListeners("Side Sound");
                 }
                 // Right side of the court was hit.
                 if (ballX >= WIDTH - RADIUS){
                     ballVelX = -ballVelX;
                     ballX = ballX - 5;
-                    //sideSound.start();
                     notifyAllListeners("Side Sound");
                 }
                 // Top was hit.
                 if (ballY < RADIUS) {
                     ballVelY = -ballVelY;
-                    //topSound.start();
                     notifyAllListeners("Top Sound");
                 }
                 // Volley was missed.
@@ -219,12 +208,12 @@ public class GameAnimationView extends View{
                     ballsMissed++;
                     drawBall = false;
                     if (ballsMissed == GAME_BALLS){
+                        notifyAllListeners("Missed Sound");
                         notifyAllListeners("Game Over");
                         notifyAllListeners("Score▲" + String.valueOf(ballsHit) + "▲" + formatter.format(ballsHit/(float)(ballsMissed+ballsHit)*100));
                         running = false;
                         gameOver = true;
                     } else {
-                        //missedSound.start();
                         notifyAllListeners("Missed Sound");
                         handler.postDelayed(missedBall, 1000);
                     }

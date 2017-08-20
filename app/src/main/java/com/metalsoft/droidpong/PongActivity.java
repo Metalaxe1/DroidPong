@@ -1,6 +1,10 @@
 package com.metalsoft.droidpong;
 
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +12,8 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.io.IOException;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -21,6 +27,8 @@ public class PongActivity extends AppCompatActivity {
     private TextView ballStartText, gameOverText;
     private int finalScore = 0;
     private double finalRatio = 0.0;
+    private SoundPool soundPool;
+    private int sideSoundID = -1, paddleSoundID = -1, topSoundID = -1, missedSoundID = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +46,18 @@ public class PongActivity extends AppCompatActivity {
                 if (data.equals("Game Started")){
                     buttonEnd.setVisibility(View.GONE);
                     ballStartText.setVisibility(View.GONE);
+                }
+                if (data.equals("Side Sound")){
+                    soundPool.play(sideSoundID, 1, 1, 0, 0, 1);
+                }
+                if (data.equals("Top Sound")){
+                    soundPool.play(sideSoundID, 1, 1, 0, 0, 1);
+                }
+                if (data.equals("Paddle Sound")){
+                    soundPool.play(paddleSoundID, 1, 1, 0, 0, 1);
+                }
+                if (data.equals("Missed Sound")){
+                    soundPool.play(missedSoundID, 1, 1, 0, 0, 1);
                 }
                 if (data.contains("▲")){
                     String[] pieces = data.split("▲");
@@ -73,6 +93,22 @@ public class PongActivity extends AppCompatActivity {
         ballStartText = (TextView) findViewById(R.id.text_ball_start);
         gameOverText = (TextView) findViewById(R.id.text_game_over);
         gameOverText.setVisibility(View.GONE);
+        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC,0);
+        AssetManager assetManager = this.getAssets();
+        try {
+            AssetFileDescriptor sideSound = assetManager.openFd("wall.wav");
+            AssetFileDescriptor topSound = assetManager.openFd("wall.wav");
+            AssetFileDescriptor paddleSound = assetManager.openFd("paddle.wav");
+            AssetFileDescriptor missedSound = assetManager.openFd("ball_missed.wav");
+            sideSoundID = soundPool.load(sideSound, 0);
+            topSoundID = soundPool.load(topSound, 0);
+            paddleSoundID = soundPool.load(paddleSound, 0);
+            missedSoundID = soundPool.load(missedSound, 0);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void endGameClick(View v){

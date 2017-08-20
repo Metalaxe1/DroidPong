@@ -38,7 +38,7 @@ public class GameAnimationView extends View{
     private SecureRandom rand;
     private DecimalFormat formatter;
     private ArrayList<PongEventListener> listeners;
-    private MediaPlayer sideSound, paddleSound, topSound, missedSound;
+    //private MediaPlayer sideSound, paddleSound, topSound, missedSound;
 
     public GameAnimationView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -55,10 +55,10 @@ public class GameAnimationView extends View{
         points = this.generateVelocities();
         initPaints();
         this.listeners = new ArrayList<>();
-        sideSound = MediaPlayer.create(context, R.raw.wall);
-        topSound = MediaPlayer.create(context, R.raw.wall);
-        paddleSound = MediaPlayer.create(context, R.raw.paddle);
-        missedSound = MediaPlayer.create(context, R.raw.ball_missed);
+        //sideSound = MediaPlayer.create(context, R.raw.wall);
+        //topSound = MediaPlayer.create(context, R.raw.wall);
+        //paddleSound = MediaPlayer.create(context, R.raw.paddle);
+        //missedSound = MediaPlayer.create(context, R.raw.ball_missed);
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -164,7 +164,8 @@ public class GameAnimationView extends View{
                         ballVelY = points[CENTER][ballSpeedIndex].getY()*(-1);
                         calculateBallSpeedIndex();
                         ballsHit++;
-                        paddleSound.start();
+                        //paddleSound.start();
+                        notifyAllListeners("Paddle Sound");
                     }
                     // If ball strikes the paddle in the middle/outer sections
                     if ((ballX >= paddleX + (.2*paddleLength) && ballX < paddleX + (.4*paddleLength)) || (ballX > paddleX + (.6*paddleLength) && ballX <= paddleX + (.8*paddleLength))){
@@ -175,7 +176,8 @@ public class GameAnimationView extends View{
                         }
                         ballVelY = points[MIDDLE][ballSpeedIndex].getY()*(-1);
                         ballsHit++;
-                        paddleSound.start();
+                        //paddleSound.start();
+                        notifyAllListeners("Paddle Sound");
                         calculateBallSpeedIndex();
                     }
                     // If ball strikes the paddle in the outer sections
@@ -187,7 +189,8 @@ public class GameAnimationView extends View{
                         }
                         ballVelY = points[END][ballSpeedIndex].getY()*(-1);
                         ballsHit++;
-                        paddleSound.start();
+                        //paddleSound.start();
+                        notifyAllListeners("Paddle Sound");
                         calculateBallSpeedIndex();
                     }
                 }
@@ -195,18 +198,21 @@ public class GameAnimationView extends View{
                 if (ballX <= RADIUS) {
                     ballVelX = -ballVelX;
                     ballX = ballX + 5;
-                    sideSound.start();
+                    //sideSound.start();
+                    notifyAllListeners("Side Sound");
                 }
                 // Right side of the court was hit.
                 if (ballX >= WIDTH - RADIUS){
                     ballVelX = -ballVelX;
                     ballX = ballX - 5;
-                    sideSound.start();
+                    //sideSound.start();
+                    notifyAllListeners("Side Sound");
                 }
                 // Top was hit.
                 if (ballY < RADIUS) {
                     ballVelY = -ballVelY;
-                    topSound.start();
+                    //topSound.start();
+                    notifyAllListeners("Top Sound");
                 }
                 // Volley was missed.
                 if (ballY >= HEIGHT + RADIUS) {
@@ -218,7 +224,8 @@ public class GameAnimationView extends View{
                         running = false;
                         gameOver = true;
                     } else {
-                        missedSound.start();
+                        //missedSound.start();
+                        notifyAllListeners("Missed Sound");
                         handler.postDelayed(missedBall, 1000);
                     }
                 }

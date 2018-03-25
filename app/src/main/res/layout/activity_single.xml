@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/fullscreen_content"
     android:background="#22B14C"
-    tools:context="com.metalsoft.droidpong.PongActivity">
+    tools:context="com.metalsoft.droidpong.SingleActivity">
 
     <com.metalsoft.droidpong.GameAnimationView
         android:id="@+id/view"
@@ -48,16 +48,21 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <Button
+
+        <TextView
+            android:id="@+id/button_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button_end"
-            android:layout_marginTop="160sp"
-            android:text="@string/return_to_main_menu"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="128dp"
             android:background="#22B14C"
             android:onClick="endGameClick"
-            />
+            android:text="Press here to quit game"
+            android:textSize="11pt"
+            android:textStyle="bold"/>
+
+
 
     </RelativeLayout>
 

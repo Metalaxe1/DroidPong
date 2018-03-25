@@ -55,12 +55,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="128dp"
-            android:background="#22B14C"
+            android:layout_marginBottom="153dp"
             android:onClick="endGameClick"
-            android:text="Press here to quit game"
-            android:textSize="11pt"
-            android:textStyle="bold"/>
+            android:text="Return to main menu"
+            android:textColor="#FFFF00"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
 
 

@@ -70,7 +70,7 @@ public class StartGameActivity extends AppCompatActivity {
             singleStart.setBackgroundColor(Color.WHITE);
             singleStart.setTextColor(Color.parseColor("#1946BA"));
             singleStart.invalidate();
-            Intent intent = new Intent(StartGameActivity.this, PongActivity.class);
+            Intent intent = new Intent(StartGameActivity.this, SingleActivity.class);
             intent.putExtra("lowest_score", returnLowestScore());
             startActivity(intent);
         }

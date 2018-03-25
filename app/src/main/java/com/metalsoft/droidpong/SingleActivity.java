@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -19,11 +18,11 @@ import java.io.IOException;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class PongActivity extends AppCompatActivity {
+public class SingleActivity extends AppCompatActivity {
 
     private Handler handler;
     private ScoresDatabase db;
-    private Button buttonEnd;
+    private TextView buttonEnd;
     private TextView ballStartText, gameOverText;
     private int finalScore = 0;
     private double finalRatio = 0.0;
@@ -32,7 +31,7 @@ public class PongActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pong);
+        setContentView(R.layout.activity_single);
         GameAnimationView animation = (GameAnimationView) findViewById(R.id.view);
         db = new ScoresDatabase(getApplicationContext());
         handler = new Handler();
@@ -88,7 +87,7 @@ public class PongActivity extends AppCompatActivity {
             actionBar.hide();
         }
 
-        buttonEnd = (Button) findViewById(R.id.button_end);
+        buttonEnd = (TextView) findViewById(R.id.button_end);
         buttonEnd.setVisibility(View.GONE);
         ballStartText = (TextView) findViewById(R.id.text_ball_start);
         gameOverText = (TextView) findViewById(R.id.text_game_over);
@@ -125,7 +124,7 @@ public class PongActivity extends AppCompatActivity {
     private Runnable highScore = new Runnable() {
         @Override
         public void run() {
-            Intent intent = new Intent(PongActivity.this, NewHighScoreActivity.class);
+            Intent intent = new Intent(SingleActivity.this, NewHighScoreActivity.class);
             startActivityForResult(intent, 1001);
         }
     };

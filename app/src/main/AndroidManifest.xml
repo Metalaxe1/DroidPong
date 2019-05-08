@@ -26,6 +26,7 @@
             android:theme="@style/FullscreenTheme" />
         <activity android:name=".NewHighScoreActivity"
             android:label="Top 5 High Score"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
         </activity>
     </application>

@@ -40,7 +40,7 @@
         android:padding="20dp"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
-        android:text="Your score ranks you in the top 5 for singler player mode.  Please enter your name below for identification of your awesome achievement."
+        android:text="Your score ranks you in the top 5 for single player mode.  Please enter your name below for identification of your awesome achievement."
         />
 
     <EditText
